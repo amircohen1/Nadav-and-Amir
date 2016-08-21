@@ -1,0 +1,15 @@
+CHIP CalcInput{
+    IN
+in[16], z, n;
+    OUT
+out[16];
+    PARTS:
+
+
+Mux16(a=in, b=false, sel=z, out=afterz);
+Not16(in=afterz, out=notafterz);
+
+Mux16(a=afterz, b=notafterz, sel=n, out=out);
+
+
+}
