@@ -40,4 +40,46 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+
+
+
+// A register:
+    Mux16(a=instruction, b=ALUOut, sel=instruction[15], out=outMuxA);
+    Not(in=instruction[15], out=isMemoryAddress);
+    Or(a=isMemoryAddress, b=instruction[5], out=writeToA);
+    ARegister(in=outMuxA, load=writeToA, out=outA, out[0..14]=addressM);
+
+// D register:
+    And(a=instruction[4], b=instruction[15], out=writeToD);
+    DRegister(in=ALUOut, load=writeToD, out=outD);
+
+// Mux16 which decides between A register and M
+    Mux16(a=outA, b=inM, sel=instruction[12], out=outMuxMorA);
+
+// ALU: c1 bit ( tells us to make the x input (D output) zero
+// c3 bit tells us if to zero the y input
+// c5 bit tells us to compute x+y or x&y
+    ALU(x=outD, y=outMuxMorA, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], ng=isneg, zr=iszero, out=ALUOut, out=outM);
+
+    And(a=instruction[15], b=instruction[3], out=writeM);
+
+// PC:
+
+    //figure if jump should accure
+    Not(in=iszero, out=notzero);
+    Not(in=isneg, out=notnegative);
+    And(a=notnegative, b=notzero, out=ispositive);
+
+    And(a=iszero, b=instruction[1], out=JEQ);
+    And(a=isneg, b=instruction[2], out=JLT);
+    And(a=ispositive, b=instruction[0], out=JGT);
+
+    Or(a=JEQ, b=JLT, out=JEQorJLT);
+    Or(a=JGT, b=JEQorJLT, out=isJump);
+
+    And(a=isJump, b=instruction[15], out=loadPc);
+    Not(in=loadPc, out=incPc);
+
+
+    PC(in=outA, load=loadPc, inc=incPc, reset=reset, out[0..14]=pc);
 }
