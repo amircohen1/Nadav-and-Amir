@@ -166,7 +166,7 @@ public class VMtranslator {
         }
         else if (segment.equals("static")) {
             outFileName = outFileName.replace("asm", index);
-            ret = "@" + outFileName + "\n" + "M=D" + "\n";
+            ret = "@R15" + "\n" + "D=M" + "\n" + "@" + outFileName + "\n" + "M=D" + "\n";
         }
         return POP_FROM_STACK + ret;
     }
