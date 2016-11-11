@@ -1,0 +1,205 @@
+function Game.new 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+call StickMan.new 0
+pop this 0
+call Obstacle.new 0
+pop this 1
+push constant 0
+pop this 2
+push pointer 0
+return
+function Game.dispose 0
+push argument 0
+pop pointer 0
+push this 0
+call StickMan.dispose 1
+pop temp 0
+push this 1
+call Obstacle.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Game.run 3
+push argument 0
+pop pointer 0
+push constant 0
+pop this 3
+push constant 0
+pop local 2
+label WHILE_EXP0
+push this 3
+not
+push local 2
+not
+and
+not
+if-goto WHILE_END0
+call Keyboard.keyPressed 0
+pop local 0
+label WHILE_EXP1
+push local 0
+push constant 0
+eq
+push local 2
+not
+and
+not
+if-goto WHILE_END1
+call Keyboard.keyPressed 0
+pop local 0
+push this 1
+call Obstacle.moveLeft 1
+pop temp 0
+push pointer 0
+call Game.checkHit 1
+pop local 2
+goto WHILE_EXP1
+label WHILE_END1
+push local 0
+push constant 81
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+pop this 3
+label IF_FALSE0
+push local 0
+push constant 131
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+pop local 1
+label WHILE_EXP2
+push local 1
+push constant 30
+lt
+push local 2
+not
+and
+not
+if-goto WHILE_END2
+push this 0
+call StickMan.moveStickManUp 1
+pop temp 0
+push this 1
+call Obstacle.moveLeft 1
+pop temp 0
+push pointer 0
+call Game.checkHit 1
+pop local 2
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP2
+label WHILE_END2
+push constant 0
+pop local 1
+label WHILE_EXP3
+push local 1
+push constant 50
+lt
+push local 2
+not
+and
+not
+if-goto WHILE_END3
+push this 1
+call Obstacle.moveLeft 1
+pop temp 0
+push pointer 0
+call Game.checkHit 1
+pop local 2
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP3
+label WHILE_END3
+push constant 0
+pop local 1
+label WHILE_EXP4
+push local 1
+push constant 30
+lt
+push local 2
+not
+and
+not
+if-goto WHILE_END4
+push this 0
+call StickMan.moveStickManDown 1
+pop temp 0
+push this 1
+call Obstacle.moveLeft 1
+pop temp 0
+push pointer 0
+call Game.checkHit 1
+pop local 2
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP4
+label WHILE_END4
+label IF_FALSE1
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Game.checkHit 0
+push argument 0
+pop pointer 0
+push this 1
+call Obstacle.getX 1
+push this 0
+call StickMan.getX 1
+push this 0
+call StickMan.getSize 1
+add
+push this 1
+call Obstacle.getRadius 1
+add
+lt
+push this 0
+call StickMan.getX 1
+push this 1
+call Obstacle.getRadius 1
+sub
+push this 1
+call Obstacle.getX 1
+lt
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 0
+call StickMan.getY 1
+push this 0
+call StickMan.getSize 1
+add
+push this 1
+call Obstacle.getY 1
+push this 1
+call Obstacle.getRadius 1
+sub
+gt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+not
+return
+label IF_FALSE1
+label IF_FALSE0
+push constant 0
+return

@@ -1,0 +1,107 @@
+/**
+* Implements the Jumping StickMan game.
+* In this game you can make the stick man jump
+* The 'up' key is used to jump
+* The 'q' key is used to quit the game.
+*/
+
+class Game {
+    // The stickMan
+    field StickMan stickMan;
+	
+	// The Obstacle
+    field Obstacle obstacle;
+
+    // The stickMan's movement jump
+    field int jump; // 0=none,1=jump
+	
+	field boolean exit;
+
+    /** Constructs a new Biking Game. */
+    constructor Game new() {
+        let stickMan = StickMan.new();
+		let obstacle = Obstacle.new();
+        let jump = 0;
+        return this;
+    }
+
+    /** Deallocates the object's memory. */
+    method void dispose() {
+        do stickMan.dispose();
+		do obstacle.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Starts the game. Handles inputs from the user that control
+     *  the stickMans's jump. */
+    method void run() {
+        var char key;
+        var int i;
+		var boolean gotHit;
+        let exit = false;
+		let gotHit = false;
+
+        while ((~exit) & (~gotHit)) {
+            let key = Keyboard.keyPressed();
+            // waits for a key to be pressed or the stickman to get hit
+            while ((key = 0) & (~gotHit)) {
+                let key = Keyboard.keyPressed();
+                do obstacle.moveLeft();
+				let gotHit = checkHit();
+            }
+			// check if the exit key was pressed
+            if (key = 81) {
+                let exit = true;
+            }
+			
+			// check if the jump key was pressed
+            if (key = 131) {
+            /** Jump procedure starts here.
+             First the StickMan movesa up, then stays in the air and then moves down
+             The obstacle doesn't stop moving */
+                let i = 0;
+				// stick man goes up
+                while ((i < 30) & (~gotHit)){
+                    do stickMan.moveStickManUp();
+                    do obstacle.moveLeft();
+					let gotHit = checkHit();
+                    //do Sys.wait(3);
+                    let i = i + 1;
+                }
+				
+				//stick man waits in the air
+                let i = 0;
+                while ((i < 50) & (~gotHit)){
+                    do obstacle.moveLeft();
+					let gotHit = checkHit();
+                    //do Sys.wait(3);
+                    let i = i + 1;
+                }
+				
+				// stick man goes down
+                let i = 0;
+                while ((i < 30) & (~gotHit)){
+                    do stickMan.moveStickManDown();
+                    do obstacle.moveLeft();
+					let gotHit = checkHit();
+                    //do Sys.wait(3);
+                    let i = i + 1;
+                }
+            }
+        }
+        return;
+	}
+
+	/** This function checks if the obstacle hit the stickMan */
+	method boolean checkHit(){
+		if (((obstacle.getX()) < ((stickMan.getX())+(stickMan.getSize())+obstacle.getRadius()))  &  (((stickMan.getX()) - (obstacle.getRadius())    ) < (obstacle.getX()))) {
+            if ((stickMan.getY() + stickMan.getSize())  >   (obstacle.getY()-obstacle.getRadius())){
+                return true;
+
+            }
+        }
+		//else - there wasn't a hit
+		return false;
+	}
+}

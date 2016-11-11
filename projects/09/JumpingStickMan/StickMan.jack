@@ -1,0 +1,124 @@
+/**
+ * Implements a graphic square. A graphic square has a screen location
+ * and a size. It also has methods for drawing, erasing, moving on the 
+ * screen, and changing its size.
+ */
+class StickMan {
+
+    // Location on the screen
+    field int x, y;
+	field int size;
+
+    /** Constructs a new StickMan. */
+    constructor StickMan new() {
+		let size = 30;
+		
+		//the starting location of the StickMan
+        let x = 125;
+        let y = 255 - size;
+		
+        //do draw();
+		do drawStickMan();
+        return this;
+    }
+
+    /** Deallocates the object's memory. */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Draws the StickMan on the screen. */
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, 255 - size, x + size, 255);
+        return;
+    }
+
+    /** Erases the StickMan from the screen. */
+    method void erase() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x, y, x + size, y + size);
+        return;
+    }
+
+    /** jump. */
+    method void jump() {
+		var int i;
+		let i = 0;
+		//jump up to the height of the the object
+		while(i < size) {
+			do Screen.setColor(false);
+			do Screen.drawRectangle(x, (y + size) - 1, x + size, y + size);
+			let y = y - 1;
+			do Screen.setColor(true);
+			do Screen.drawRectangle(x, y, x + size, y + 1);
+			let i = i + 1;
+		}
+		let i = 0;
+		do Sys.wait(100); // Delays the going down
+
+		//go down
+		while(i < size) {
+			do Screen.setColor(false);
+			do Screen.drawRectangle(x, y, x + size, y + 1);
+			let y = y + 1;
+			do Screen.setColor(true);
+			do Screen.drawRectangle(x, (y + size) - 1, x + size, y + size);
+			let i = i + 1;
+		}
+	    
+		return;
+    }
+
+
+
+	method void drawStickMan(){
+		do Screen.setColor(true);
+		do Screen.drawCircle(x+11,y+3,3);
+		do Screen.drawLine(x+11,y+7,x+11, y+16);
+		do Screen.drawLine(x+11,y+7,x+5,y+11);
+		do Screen.drawLine(x+11,y+7,x+17,y+11);
+		do Screen.drawLine(x+11,y+16,x+5,y+24);
+		do Screen.drawLine(x+11,y+16,x+17,y+24);
+		do Screen.drawLine(x,y+24,x+22,y+24);
+		do Screen.drawCircle(x+5,y+27,3);
+		do Screen.drawCircle(x+17,y+27,3);
+		do Screen.setColor(false);
+		do Screen.drawCircle(x+5,y+27,2);
+		do Screen.drawCircle(x+17,y+27,2);
+		return;
+	}
+
+	method void eraseStickMan(){
+		do Screen.setColor(false);
+		do Screen.drawRectangle(x,y,x+size,y+size);
+		return;
+	}
+
+	method void moveStickManUp(){
+		do eraseStickMan();
+		let y = y - 1;
+		do drawStickMan();
+		return;
+	}
+
+	method void moveStickManDown(){
+		do eraseStickMan();
+		let y = y + 1;
+		do drawStickMan();
+		return;
+	}
+
+	method int getX(){
+		return x;
+	}
+
+	method int getY(){
+		return y;
+	}
+
+	method int getSize(){
+		return size;
+	}
+}

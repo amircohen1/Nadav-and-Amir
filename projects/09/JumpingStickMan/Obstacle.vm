@@ -1,0 +1,98 @@
+function Obstacle.new 1
+push constant 3
+call Memory.alloc 1
+pop pointer 0
+push constant 5
+pop this 2
+push constant 506
+pop this 0
+push constant 250
+pop this 1
+push pointer 0
+return
+function Obstacle.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Obstacle.draw 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 2
+call Screen.drawCircle 3
+pop temp 0
+push constant 0
+return
+function Obstacle.erase 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 2
+call Screen.drawCircle 3
+pop temp 0
+push constant 0
+return
+function Obstacle.moveLeft 0
+push argument 0
+pop pointer 0
+push this 0
+push this 2
+push constant 1
+add
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Obstacle.erase 1
+pop temp 0
+push this 0
+push constant 1
+sub
+pop this 0
+push pointer 0
+call Obstacle.draw 1
+pop temp 0
+push constant 3
+call Sys.wait 1
+pop temp 0
+goto IF_END0
+label IF_FALSE0
+push pointer 0
+call Obstacle.erase 1
+pop temp 0
+push constant 506
+pop this 0
+push constant 250
+pop this 1
+label IF_END0
+push constant 0
+return
+function Obstacle.getY 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Obstacle.getX 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Obstacle.getRadius 0
+push argument 0
+pop pointer 0
+push this 2
+return
